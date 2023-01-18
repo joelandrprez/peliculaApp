@@ -1,3 +1,4 @@
+import 'package:appeliculas/models/models.dart';
 import 'package:appeliculas/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -8,18 +9,18 @@ class detailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final String movie = ModalRoute.of(context)?.settings.arguments.toString() ?? 'No-movie'; 
-
+    final Movie movie = ModalRoute.of(context)?.settings.arguments as Movie; 
+    print(movie);
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const _CustomAppBar(),
+          _CustomAppBar(movie:movie),
           SliverList(
             delegate: SliverChildListDelegate([
-              const _PosterAndTitle(),
+              _PosterAndTitle(movie:movie),
               const _OverView(),
               const _OverView(),
-              const CastingScreen()
+              CastingScreen(movieId:movie.id)
 
 
 
@@ -33,7 +34,9 @@ class detailsScreen extends StatelessWidget {
 
 class _CustomAppBar extends StatelessWidget {
    
-  const _CustomAppBar({Key? key}) : super(key: key);
+  final Movie movie;   
+   
+  const _CustomAppBar({Key? key,required this.movie}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
@@ -48,16 +51,16 @@ class _CustomAppBar extends StatelessWidget {
           width: double.infinity,
           color: Colors.black12,
           alignment: Alignment.bottomCenter,
-          child:const Text(
-            'Detalle de la pelicula',
-            style: TextStyle(
+          child:Text(
+            movie.title!,
+            style:const TextStyle(
               fontSize: 16
             ),
             ),
         ),
-        background:const FadeInImage(
-                placeholder: AssetImage('assets/no-image.jpg'), 
-                image: NetworkImage('https://educacion30.b-cdn.net/wp-content/uploads/2019/02/girasoles-978x652.jpg'),
+        background: FadeInImage(
+                placeholder:const AssetImage('assets/no-image.jpg'), 
+                image: NetworkImage(movie.fullbackdropPathImg),
                 fit: BoxFit.cover),
       ),
     );
@@ -66,7 +69,8 @@ class _CustomAppBar extends StatelessWidget {
 
 class _PosterAndTitle extends StatelessWidget {
    
-  const _PosterAndTitle({Key? key}) : super(key: key);
+  final Movie movie;   
+  const _PosterAndTitle({Key? key,required this.movie}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
@@ -76,12 +80,15 @@ class _PosterAndTitle extends StatelessWidget {
       padding:const EdgeInsets.symmetric(horizontal:20 ),//internamente
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child:const FadeInImage(
-                placeholder: AssetImage('assets/no-image.jpg'), 
-                image: NetworkImage('https://educacion30.b-cdn.net/wp-content/uploads/2019/02/girasoles-978x652.jpg'),
-                height: 150,
+          Hero(
+            tag: movie.heroID!,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child:FadeInImage(
+                  placeholder:const AssetImage('assets/no-image.jpg'), 
+                  image: NetworkImage(movie.fullPosterImg),
+                  height: 150,
+              ),
             ),
           ),
           const SizedBox(
@@ -89,10 +96,19 @@ class _PosterAndTitle extends StatelessWidget {
           ),
            Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-               Text('titulo',style: fuente.headline5,overflow: TextOverflow.ellipsis,maxLines: 2,),
-               Text('nombre original',style: fuente.subtitle1,overflow: TextOverflow.ellipsis,maxLines: 1,),
-               Row(
+              SizedBox(
+                width: 250,
+                child: Text(
+                    movie.title!,
+                    style: fuente.headline5,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                    maxLines: 2),
+              ),
+              Text(movie.originalTitle!,style: fuente.subtitle1,overflow: TextOverflow.ellipsis,maxLines: 1,),
+              Row(
                     children:const [
                       Icon(Icons.star_rate_outlined,size: 15,color: Colors.grey,),
                       SizedBox(width: 5),

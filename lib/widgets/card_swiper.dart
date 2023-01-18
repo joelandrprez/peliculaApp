@@ -1,30 +1,56 @@
+import 'package:appeliculas/models/movie.dart';
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
 
 class CardSwiper extends StatelessWidget {
+  final List<Movie> movies;
+
+  const CardSwiper({
+    Key? key,
+    required this.movies    
+    }) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
+    if(this.movies.length == 0){
+      return Container(
+        width: double.infinity,
+        height: size.height * 0.5,
+        child:const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     
     return Container(
       margin: const EdgeInsets.all(15.0),
       width: double.infinity,
       height: size.height * 0.5,
       child: Swiper(
-        itemCount: 10,
+        itemCount: movies.length,
         layout: SwiperLayout.STACK,
         itemWidth: size.width * 0.6,
         itemHeight: size.height * 0.9,
         itemBuilder: (BuildContext context,int index){
+
+          final movie = movies[index];
+
+          movie.heroID = 'swiper-${movie.id}';
+
           return GestureDetector(
-            onTap: ()=>{Navigator.pushNamed(context, 'details',arguments: 'movie-instance')},
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: const FadeInImage(
-                placeholder: AssetImage('assets/no-image.jpg'), 
-                image: NetworkImage('https://educacion30.b-cdn.net/wp-content/uploads/2019/02/girasoles-978x652.jpg'),
-                fit: BoxFit.cover,),
+            onTap: ()=>{Navigator.pushNamed(context, 'details',arguments: movie)},
+            child: Hero(
+              tag: movie.heroID!,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: FadeInImage(
+                  placeholder:const AssetImage('assets/no-image.jpg'), 
+                  image: NetworkImage(movie.fullPosterImg),
+                  fit: BoxFit.cover,),
+              ),
             ),
           );
         },

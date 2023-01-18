@@ -11,7 +11,6 @@ class Movie {
         required this.overview,
         required this.popularity,
         required this.posterPath,
-        required this.releaseDate,
         required this.title,
         required this.video,
         required this.voteAverage,
@@ -27,11 +26,28 @@ class Movie {
     String? overview;
     double? popularity;
     String? posterPath;
-    DateTime? releaseDate;
     String? title;
     bool? video;
     double? voteAverage;
     int? voteCount;
+    
+    String? heroID;
+
+    get fullPosterImg{
+
+      if(posterPath != null)
+        return 'https://image.tmdb.org/t/p/w500${posterPath}';
+
+      return 'https://i.stack.imgur.com/GNhxO.png';
+    }
+
+    get fullbackdropPathImg{
+
+      if(backdropPath != null)
+        return 'https://image.tmdb.org/t/p/w500${backdropPath}';
+
+      return 'https://i.stack.imgur.com/GNhxO.png';
+    }    
 
     factory Movie.fromJson(String str) => Movie.fromMap(json.decode(str));
 
@@ -45,7 +61,6 @@ class Movie {
         overview: json["overview"],
         popularity: json["popularity"].toDouble(),
         posterPath: json["poster_path"],
-        releaseDate: DateTime.parse(json["release_date"]),
         title: json["title"],
         video: json["video"],
         voteAverage: json["vote_average"].toDouble(),

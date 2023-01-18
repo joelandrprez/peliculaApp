@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:appeliculas/models/movie.dart';
+import 'package:appeliculas/models/models.dart';
 
 class NowPlayingResponse {
     NowPlayingResponse({
@@ -15,9 +15,9 @@ class NowPlayingResponse {
         required this.totalResults,
     });
 
-    Dates? dates;
+    Dates dates;
     int? page;
-    List<Movie?>? results;
+    List<Movie> results;
     int? totalPages;
     int? totalResults;
 
@@ -26,7 +26,7 @@ class NowPlayingResponse {
     factory NowPlayingResponse.fromMap(Map<String, dynamic> json) => NowPlayingResponse(
         dates: Dates.fromMap(json["dates"]),
         page: json["page"],
-        results: json["results"] == null ? [] : List<Movie?>.from(json["results"]!.map((x) => Movie.fromMap(x))),
+        results: json["results"] == null ? [] : List<Movie>.from(json["results"]!.map((x) => Movie.fromMap(x))),
         totalPages: json["total_pages"],
         totalResults: json["total_results"],
     );
